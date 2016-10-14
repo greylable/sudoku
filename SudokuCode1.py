@@ -37,7 +37,7 @@ translated_puzzle = dict_puzzle(puzzle,cell)
 #print translated_puzzle
 
 def box(cell_break):
-		return [generate_keys(row_box,row_col) for row_box in cell_break for row_col in cell_break]
+	return [generate_keys(row_box,row_col) for row_box in cell_break for row_col in cell_break]
 
 
 def column(cell):
@@ -96,7 +96,6 @@ def filter_column_constrain(particular_cell):
 			container = container + sublist
 	return list(set(container)-set([particular_cell]))
 
-
 def filter_cell_constrain(particular_cell,cell_break,cell):
 	container = []
 	for sublist in total_constrain(cell_break,cell):
@@ -105,18 +104,6 @@ def filter_cell_constrain(particular_cell,cell_break,cell):
 	return list(set(container)-set([particular_cell]))
 
 #print filter_cell_constrain('11',cell_break,cell)
-
-def filter_cell_constrain_separate(particular_cell):
-	container = []
-	total = [box_constrain]+[row_constrain]+[column_constrain]
-	for sublist in total:
-		for i in sublist:
-			if particular_cell in i:
-				i.remove(particular_cell)
-				container = container + [i]
-	return container
-
-#print filter_cell_constrain_separate('55')
 
 def markup_all_cell(puzzle,cell_break,cell):
 
@@ -144,57 +131,50 @@ def markup_all_cell(puzzle,cell_break,cell):
 
 mark_up_once = markup_all_cell(puzzle,cell_break,cell)
 
+#print display(translated_puzzle)
 
-print display(translated_puzzle)
+def purge(puzzle,particular_cell,value,cell_break,cell):
+	container = {}
+	keys = filter_cell_constrain(particular_cell,cell_break,cell)
+	puzzle[particular_cell] = value
+	for i in keys:
+		if value in puzzle[i]:
+			contain = puzzle[i]
+			new_contain = contain.replace(value,'')
+			puzzle[i] = new_contain
+		else:
+			continue
+	return puzzle
 
-#mark_up_twice = markup_all_cell(mark_up_once,cell_break,cell)
-
-'''def hidden_pair(puzzle,particular_cell,cell_break,cell):
-	keys_constrain = filter_cell_constrain(particular_cell,cell_break,cell)
-	container = []
-	if len(puzzle[particular_cell]) != 1:
-		s1 = set(puzzle[particular_cell])
-
-	for j in keys_constrain:
-		if len(puzzle[j]) != 1:
-			s2 = set(puzzle[j])
-			intersect = set.intersection(s1,s2)
-			if len(intersect) == 2:
-				pair_hid = ''.join(list(intersect))
-				for string in pair_hid:
-				
-
-hidden_pair(mark_up_once,'26',cell_break,cell)'''
-
-
-
+#after_purge = purge(mark_up_once,'55','5',cell_break,cell))
 
 def hidden_single(puzzle,particular_cell):
 	container = []
 	counter = 0
-	if len(puzzle[particular_cell]) != 1:
+	if len(puzzle[particular_cell]) > 1:
 		box_keys = filter_box_constrain(particular_cell)
 		row_keys = filter_row_constrain(particular_cell)
 		column_keys = filter_column_constrain(particular_cell)
 		for j in puzzle[particular_cell]:
 			for h in box_keys:
 				if len(puzzle[h]) > 1 and set.intersection(set(j),set(puzzle[h])) == set([]):
-					print h
+					counter = counter + 1
+					container = container + [j]
+				else:
+					continue
 
-		#	for i in [box_keys]+[row_keys]+[column_keys]:
-		#		for h in i:
-		#			if len(puzzle[h]) > 1 and set.intersection(set(j),set(puzzle[h])) == set([]):
-		#				counter = counter + 0
-		#				container = container + [j]
-		#				print container
+			if container.count(j) == counter:
+				return purge(puzzle,particular_cell,j,cell_break,cell)
+			else:
+				return puzzle
 
-			#if container.count(j) == counter:
-			#	puzzle[particular_cell] = j
-		#return puzzle
-					
-
-#print hidden_single(mark_up_once,'55')
+#print display(hidden_single(mark_up_once,'55'))
 				
-	
+def backtrack(puzzle):
+	keys = hello1
+	for i in keys:
+		print i
+
+backtrack(mark_up_once)
 
 
