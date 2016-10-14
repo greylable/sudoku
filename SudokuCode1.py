@@ -8,6 +8,13 @@ cell = '123456789'
 
 cell_break = ['123','456','789']
 
+class MainLogic:
+	def __init__(self):
+		self.puzzle = {}
+		self.cell = '123456789'
+
+    
+
 
 def generate_keys(A, B):
     "Cross product of elements in A and elements in B."
@@ -131,7 +138,7 @@ def markup_all_cell(puzzle,cell_break,cell):
 
 mark_up_once = markup_all_cell(puzzle,cell_break,cell)
 
-#print display(translated_puzzle)
+print display(translated_puzzle)
 
 def purge(puzzle,particular_cell,value,cell_break,cell):
 	container = {}
@@ -171,10 +178,14 @@ def hidden_single(puzzle,particular_cell):
 #print display(hidden_single(mark_up_once,'55'))
 				
 def backtrack(puzzle):
-	keys = hello1
+	contain = []
+	keys = generate_keys(cell,cell)
 	for i in keys:
-		print i
+		if len(puzzle[i]) > 1:
+			contain = contain + [len(puzzle[i])]
+	fake_dict = [i,min(contain)]
 
-backtrack(mark_up_once)
+	
+print backtrack(mark_up_once)
 
 

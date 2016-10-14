@@ -1,0 +1,33 @@
+https://conference.scipy.org/proceedings/scipy2010/pdfs/henderson.pdf
+
+http://stackoverflow.com/questions/1518335/the-dancing-links-algorithm-an-explanation-that-is-less-explanatory-but-more-o
+
+https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/presentationboard.pdf
+
+(useful linking dancing and exact)
+
+http://www.nmk.fpv.ukf.sk/2014/proceedings/6_chytry_fulltext.pdf
+
+(graph colouring - vertex, edge)
+
+http://cs.mcgill.ca/~aassaf9/python/algorithm_x.html
+(backtracking algo)
+
+http://www.codeproject.com/Articles/801268/A-Sudoku-Solver-using-Graph-Coloring
+
+(graph colouring)
+
+http://www.drdobbs.com/cpp/sudoku-graph-theory/184406436?pgno=2
+
+(chain exclusion)
+
+http://www.ams.org/samplings/feature-column/fcarc-kanoodle
+(exact cover problem)
+
+http://buzzard.ups.edu/talks/beezer-2010-AIMS-sudoku.pdf
+(trying to uds exact cover in sudoku terms)
+
+http://www.math.utah.edu/~yzhang/teaching/1030/Sudoku
+(like some fyp paper)
+
+
