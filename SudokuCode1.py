@@ -1,19 +1,12 @@
 # Please input puzzle those shit here #
 
 #puzzle = '003198070890370600007004893030087009079000380508039040726940508905800000380756900' #hard
-#puzzle = '000310085300040000218000037724069318003080040600004700430000271570603000000001060' #easy
+puzzle = '000310085300040000218000037724069318003080040600004700430000271570603000000001060' #easy
 #puzzle = '049132000081479000327685914096051800075028000038046005853267000712894563964513000'  #hidden pair?
-puzzle = '000000002000095400006800000085020941000109738100000256893010000000900004007600300' #hidden single
+#puzzle = '000000002000095400006800000085020941000109738100000256893010000000900004007600300' #hidden single
 cell = '123456789'
 
 cell_break = ['123','456','789']
-
-class MainLogic:
-	def __init__(self):
-		self.puzzle = {}
-		self.cell = '123456789'
-
-    
 
 
 def generate_keys(A, B):
@@ -138,7 +131,9 @@ def markup_all_cell(puzzle,cell_break,cell):
 
 mark_up_once = markup_all_cell(puzzle,cell_break,cell)
 
-print display(translated_puzzle)
+#print display(translated_puzzle)
+
+
 
 def purge(puzzle,particular_cell,value,cell_break,cell):
 	container = {}
@@ -176,16 +171,33 @@ def hidden_single(puzzle,particular_cell):
 				return puzzle
 
 #print display(hidden_single(mark_up_once,'55'))
+#print display(translated_puzzle)
+
+def check_markup(puzzle):		# do mark up of puzzle. If new mark up is same as original mark up, then stop. Do backtrack. Else, u keep repeating markup.
+	i = 0
+	puzzle_new = {}
+	
+	while puzzle_new != markup_all_cell(puzzle,cell_break,cell):
+		puzzle = markup_all_cell(puzzle,cell_break,cell)
+		puzzle_new = puzzle.copy()
+		i = i + 1
+	return str(i) + '\n' + display(translated_puzzle)
+
+#print check_markup(translated_puzzle)
+
+#print display(translated_puzzle)
 				
 def backtrack(puzzle):
 	contain = []
 	keys = generate_keys(cell,cell)
-	for i in keys:
-		if len(puzzle[i]) > 1:
-			contain = contain + [len(puzzle[i])]
-	fake_dict = [i,min(contain)]
+	print puzzle
+	#for i in keys:
+	#	if len(puzzle[i]) > 1:
+	#		contain = contain + [len(puzzle[i])]
+	#fake_dict = [i,min(contain)]
+
 
 	
-print backtrack(mark_up_once)
+print backtrack(check_markup(translated_puzzle))
 
 
