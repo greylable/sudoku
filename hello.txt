@@ -31,3 +31,13 @@ http://www.math.utah.edu/~yzhang/teaching/1030/Sudoku
 (like some fyp paper)
 
 
+https://gieseanw.wordpress.com/2011/06/16/solving-sudoku-revisited/
+(exact + dancing)
+
+
+Typically, there will be many hundreds of rows and columns to adequately capture a problem.
+
+
+Dancing links is a technique to make it very quick to remove things from this table and then add them again if it didn't work out.
+
+
