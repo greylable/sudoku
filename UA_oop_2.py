@@ -1,6 +1,9 @@
 import solver_oop
 import itertools
 
+from PyQt4 import QtGui
+from PyQt4 import QtCore
+
 
 def trans_dict_to_str(dict_puzz):
     contain1 = []
@@ -31,12 +34,13 @@ def display(translated_puzzle):
 
 class CellProperties():
 
-    def __init__(self,cell):
+    def __init__(self,cell,puzzle):
         self.cell = cell
+        self.puzzle = puzzle
 
     def find_row(self):
         contain = []
-        row_list = solver_oop.PuzzleData(puzzle).row()
+        row_list = solver_oop.PuzzleData(self.puzzle).row()
 
         for j in row_list:
             if self.cell in j:
@@ -45,7 +49,7 @@ class CellProperties():
 
     def find_col(self):
         contain = []
-        col_list = solver_oop.PuzzleData(puzzle).column()
+        col_list = solver_oop.PuzzleData(self.puzzle).column()
 
         for j in col_list:
             if self.cell in j:
@@ -54,7 +58,7 @@ class CellProperties():
 
     def find_box(self):
         contain = []
-        box_list = solver_oop.PuzzleData(puzzle).box()
+        box_list = solver_oop.PuzzleData(self.puzzle).box()
 
         for j in box_list:
             if self.cell in j:
@@ -63,7 +67,6 @@ class CellProperties():
 
 
 class UA4():
-
     def __init__(self,puzzle):
         # puzzle in str
         self.puzzle = puzzle
@@ -74,7 +77,7 @@ class UA4():
         contain1 = []
         #if len(removed_cells) > 1:
         for a, b in itertools.combinations(removed_cells, 2):
-            if (CellProperties(a).find_row() == CellProperties(b).find_row() or CellProperties(a).find_col() == CellProperties(b).find_col()) and CellProperties(a).find_box() == CellProperties(b).find_box():
+            if (CellProperties(a,self.puzzle).find_row() == CellProperties(b,self.puzzle).find_row() or CellProperties(a,self.puzzle).find_col() == CellProperties(b,self.puzzle).find_col()) and CellProperties(a,self.puzzle).find_box() == CellProperties(b,self.puzzle).find_box():
                 contain1 = contain1 + [[a,b]]
         return contain1
 
@@ -134,7 +137,7 @@ class UA4():
             for j in i_frens:
                 new_ppl2 = [key] + [j]
                 for m, n in itertools.combinations(new_ppl2, 2):
-                    if (CellProperties(m).find_row() == CellProperties(n).find_row() and CellProperties(m).find_box() != CellProperties(n).find_box()) or (CellProperties(m).find_col() == CellProperties(n).find_col()  and CellProperties(m).find_box() != CellProperties(n).find_box()):
+                    if (CellProperties(m,self.puzzle).find_row() == CellProperties(n,self.puzzle).find_row() and CellProperties(m,self.puzzle).find_box() != CellProperties(n,self.puzzle).find_box()) or (CellProperties(m,self.puzzle).find_col() == CellProperties(n,self.puzzle).find_col()  and CellProperties(m,self.puzzle).find_box() != CellProperties(n,self.puzzle).find_box()):
                     # same row but not box or same col but not box
                         contain2 = contain2 + [[m,n]]
             contain3 = contain3 + contain2
@@ -252,7 +255,7 @@ class BandStackCombi():
 
     def __init__(self,puzzle,size):
         self.puzzle = puzzle
-        self.choices = choices
+        self.choices = [1,2,3,4,5,6,7,8,9]
         self.size = size
 
     def select_a_digit(self,digit,band_stack):
@@ -365,10 +368,10 @@ class BandStackCombi():
 
 
 class BandStackPure():
-
+    #progress_bar_update = QtCore.pyqtSignal()
     def __init__(self,puzzle,size):
         self.puzzle = puzzle
-        self.choices = choices
+        self.choices = [1,2,3,4,5,6,7,8,9]
         self.size = size
 
     def band_stack_pure(self):
@@ -398,9 +401,9 @@ class BandStackPure():
             contain_row = []
             contain_col = []
             for a in h:
-                contain_box = contain_box + CellProperties(a).find_box()
-                contain_row = contain_row + CellProperties(a).find_row()
-                contain_col = contain_col + CellProperties(a).find_col()
+                contain_box = contain_box + CellProperties(a,self.puzzle).find_box()
+                contain_row = contain_row + CellProperties(a,self.puzzle).find_row()
+                contain_col = contain_col + CellProperties(a,self.puzzle).find_col()
             contain_box2 = []
             contain_row2 = []
             contain_col2 = []
@@ -421,7 +424,8 @@ class BandStackPure():
 
     def iterate_sieve_out_band_stack_pure(self):
         tuple_seq_all = [[[2,3]],[[3,2]]]
-        band_stack_all = BandStackGenerate(puzzle,3).band_stack_combi(1,0) + BandStackGenerate(puzzle,3).band_stack_combi(0,1)
+        #tuple_seq_all = [[[2,4]]]
+        band_stack_all = BandStackGenerate(self.puzzle,3).band_stack_combi(1,0) + BandStackGenerate(self.puzzle,3).band_stack_combi(0,1)
         contain2 = []
         for h in band_stack_all:
             contain1 = []
@@ -439,7 +443,7 @@ class BandStackPure():
 
         contain2 = []
         for i in self.iterate_sieve_out_band_stack_pure():
-            given_puz_hehe = solver_oop.PuzzleData(puzzle).dict_puzzle()
+            given_puz_hehe = solver_oop.PuzzleData(self.puzzle).dict_puzzle()
             for j in i:
                 given_puz_hehe[j] = '0'
             contain = [given_puz_hehe]
@@ -447,6 +451,8 @@ class BandStackPure():
             contain1 = solver_oop.Solver(3,self.choices,puzzle_str).trans_str(puzzle_str)
             if len(contain1) > 1:
                 contain2 = contain2 + [i]
+            #progress = self.iterate_sieve_out_band_stack_pure().index(i)+1/len(self.iterate_sieve_out_band_stack_pure())
+            #self.progress_bar_update.emit(progress)
         return contain2
 
 
@@ -456,15 +462,15 @@ class BandStackMix():
         self.UA_size = UA_size
         self.size = size
         self.puzzle = puzzle
-        self.choices = choices
+        self.choices = [1,2,3,4,5,6,7,8,9]
 
     def check_if_same_box_and_row_or_col(self,cell_a,cell_b):
-        cell_a_box = CellProperties(cell_a).find_box()
-        cell_b_box = CellProperties(cell_b).find_box()
-        cell_a_row = CellProperties(cell_a).find_row()
-        cell_b_row = CellProperties(cell_b).find_row()
-        cell_a_col = CellProperties(cell_a).find_col()
-        cell_b_col = CellProperties(cell_b).find_col()
+        cell_a_box = CellProperties(cell_a,self.puzzle).find_box()
+        cell_b_box = CellProperties(cell_b,self.puzzle).find_box()
+        cell_a_row = CellProperties(cell_a,self.puzzle).find_row()
+        cell_b_row = CellProperties(cell_b,self.puzzle).find_row()
+        cell_a_col = CellProperties(cell_a,self.puzzle).find_col()
+        cell_b_col = CellProperties(cell_b,self.puzzle).find_col()
         if cell_a_box == cell_b_box:
             if cell_a_row == cell_b_row or cell_a_col == cell_b_col:
                 return 'Same Box Same Row/Col'
@@ -497,9 +503,9 @@ class BandStackMix():
             contain_row = []
             contain_col = []
             for a in h:
-                contain_box = contain_box + CellProperties(a).find_box()
-                contain_row = contain_row + CellProperties(a).find_row()
-                contain_col = contain_col + CellProperties(a).find_col()
+                contain_box = contain_box + CellProperties(a,self.puzzle).find_box()
+                contain_row = contain_row + CellProperties(a,self.puzzle).find_row()
+                contain_col = contain_col + CellProperties(a,self.puzzle).find_col()
             contain_box2 = []
             contain_row2 = []
             contain_col2 = []
@@ -513,16 +519,18 @@ class BandStackMix():
                 # need another for at least 2 boxes, got at least 2 numbers in same row/col in that box
                 contain1 = contain1 + [h]
         return contain1
+
+
         #contain2 = []
         #for j in contain1:
         #    if self.check_box(j) == False:
         #        contain2 = contain2 + [j]
-        #return contain2'''
+        #return contain2
 
     def iterate_sieve_out_band_stack_mixed(self):
 
         tuple_seq_all = [[[3,2]]]
-        band_stack_all = BandStackGenerate(puzzle,3).band_stack_combi(1,1)
+        band_stack_all = BandStackGenerate(self.puzzle,3).band_stack_combi(1,1)
         contain2 = []
         for h in band_stack_all:
             contain1 = []
@@ -539,7 +547,7 @@ class BandStackMix():
     def finding_UA_band_stack_mixed(self):
         contain2 = []
         for i in self.iterate_sieve_out_band_stack_mixed():
-            given_puz_hehe = solver_oop.PuzzleData(puzzle).dict_puzzle()
+            given_puz_hehe = solver_oop.PuzzleData(self.puzzle).dict_puzzle()
             for j in i:
                 given_puz_hehe[j] = '0'
             contain = [given_puz_hehe]
@@ -569,8 +577,6 @@ class UAGeneral():
 
 
 
-
-
 if __name__ == "__main__" :
 
     #cell_definition = '0123'
@@ -581,9 +587,9 @@ if __name__ == "__main__" :
     box_definition = ['012', '345', '678']
     choices = [1,2,3,4,5,6,7,8,9]
 
-    puzzle = '192374658574186293836925417987562134423819576651437982768251349345698721219743865'
-
-    band_stack = BandStackGenerate(puzzle,3).band_stack_combi(1,1)[8]
+    #puzzle = '192374658574186293836925417987562134423819576651437982768251349345698721219743865'
+    puzzle = '821746953596813724743259861465987132917325486238461597654138279372594618189672345'
+    #band_stack = BandStackGenerate(puzzle,3).band_stack_combi(1,1)[8]
     #print band_stack
 
     #print BandStackMix(6,puzzle,3).sieve_out_band_stack_mixed(band_stack,3,2)
@@ -596,6 +602,8 @@ if __name__ == "__main__" :
 
 
     #print BandStackMix(6,puzzle,3).sieve_out_band_stack_mixed(band_stack,3,2)
-    print len(BandStackMix(6,puzzle,3).finding_UA_band_stack_mixed())
+    #print len(BandStackMix(6,puzzle,3).finding_UA_band_stack_mixed())
 
-    print len(BandStackPure(puzzle,3).finding_UA_band_stack_pure())
+    #print len(BandStackPure(puzzle,3).finding_UA_band_stack_pure())
+    #print UA4(puzzle).check_element2()
+    print BandStackPure(puzzle,3).finding_UA_band_stack_pure()
